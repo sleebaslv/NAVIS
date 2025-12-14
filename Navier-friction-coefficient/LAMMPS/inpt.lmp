@@ -1,0 +1,206 @@
+# @author: Sleeba Varghese
+# @description: LAMMPS file to output
+# 1) the c.o.m velocity of the slab
+# 2) force acting on the slab due to wall
+
+units           real
+atom_style      full
+boundary        p p f
+
+###################################################
+#                 INPUT                           #
+###################################################
+
+read_data       waterGnc.lmpsys
+
+###################################################
+#                 VARIABLES                       #
+###################################################
+
+variable        seed    equal 257384*${irun}
+variable        Tequil  equal 300.0       # Temperature [K]
+variable        eqrun1  equal 2.0e6       # Equilibration stage-1 steps
+variable        eqrun2  equal 2.0e6       # Equilibration stage-2 steps
+variable        prorun  equal 2.0e6       # Production stage steps
+
+###################################################
+#                 GROUPING                        #
+###################################################
+
+group           water       type 1 2
+group           hyd         type 1
+
+# Graphene carbon types (3-8)
+group           gnc         type 3 4 5 6 7 8
+group           gncfixed    type 5 8
+group           gncLmobile  type 3 4
+group           gncRmobile  type 6 7
+group           mobile      subtract all gncfixed
+
+###################################################
+#              FORCE FIELD SETUP                  #
+###################################################
+# type 1 : H (water)
+# type 2 : O (water)
+# type 3-8 : C (graphene)
+
+pair_style      hybrid tersoff lj/cut/coul/long 10.0 10.0
+kspace_style    pppm 0.000001
+kspace_modify   slab 3.0
+
+bond_style      harmonic
+angle_style     harmonic
+pair_modify     mix arithmetic shift yes
+
+bond_coeff      1 1000.0 1.0
+angle_coeff     1 1000.0 109.47
+
+# C-C : Tersoff
+pair_coeff      * * tersoff SiC.tersoff_real_opt NULL NULL C C C C C C
+
+# Water-water LJ + Coulomb
+pair_coeff      1 1 lj/cut/coul/long 0.0      0.0      # H-H
+pair_coeff      1 2 lj/cut/coul/long 0.0      0.0      # H-O
+pair_coeff      2 2 lj/cut/coul/long 0.15535  3.166    # O-O
+
+# Water-graphene interactions (O-C, H-C ~ 0)
+pair_coeff      1 3* lj/cut/coul/long 0.0      0.0     # H-C*
+pair_coeff      2 3* lj/cut/coul/long 0.09369  3.19    # O-C*
+pair_coeff      2 5  lj/cut/coul/long 0.0      0.0     # O-C (fixed left)
+pair_coeff      2 8  lj/cut/coul/long 0.0      0.0     # O-C (fixed right)
+
+# Graphene-graphene LJ correction between C types
+pair_coeff      3 4* lj/cut/coul/long 0.0556410 3.4
+pair_coeff      4 5* lj/cut/coul/long 0.0556410 3.4
+pair_coeff      5 6* lj/cut/coul/long 0.0556410 3.4
+pair_coeff      6 7* lj/cut/coul/long 0.0556410 3.4
+pair_coeff      7 8* lj/cut/coul/long 0.0556410 3.4
+
+###################################################
+#               INITIALIZATION                    #
+###################################################
+
+timestep        1.0
+neighbor        2.0 bin
+neigh_modify    every 1 delay 0 check yes
+neigh_modify    exclude group gnc hyd   # For computational efficiency 
+
+# Initial velocities
+velocity        water       create ${Tequil} 123456 mom yes rot yes dist gaussian
+velocity        gncLmobile  create ${Tequil} 123456 mom yes rot yes dist gaussian
+velocity        gncRmobile  create ${Tequil} 123456 mom yes rot yes dist gaussian
+
+###################################################
+#                 MINIMIZATION                    #
+###################################################
+
+fix             fxgncfixed gncfixed setforce 0.0 0.0 0.0
+fix             fxmobile   mobile   setforce 0.0 0.0 0.0
+
+minimize        1.0e-6 1.0e-6 100000 100000
+
+unfix           fxmobile
+
+reset_timestep  0
+
+###################################################
+#                 WHOLE-SIMULATION FIXES          #
+###################################################
+
+# SHAKE for rigid-like water (O-H bonds & H-O-H angle)
+fix             fxshk     water       shake 0.0001 20 0 b 1 a 1
+
+# Remove net linear momentum of mobile graphene slabs
+fix             fxmomL    gncLmobile  momentum 1 linear 1 1 1
+fix             fxmomR    gncRmobile  momentum 1 linear 1 1 1
+
+# Recentering graphene slabs (fixed to initial COM position in z)
+fix             fxrecentL1 gncLmobile recenter NULL NULL INIT
+fix             fxrecentR1 gncRmobile recenter NULL NULL INIT
+
+###################################################
+#              EQUILIBRATION - STAGE 1            #
+###################################################
+
+fix             fxnvemobile           mobile nve
+
+# Langevin thermostat on graphene and water
+fix             fxlangevinGncLmobile  gncLmobile langevin ${Tequil} ${Tequil} $(100.0*dt) 67883 tally yes
+fix             fxlangevinGncRmobile  gncRmobile langevin ${Tequil} ${Tequil} $(100.0*dt) 67883 tally yes
+fix             fxlangevinWater       water      langevin ${Tequil} ${Tequil} $(100.0*dt) 67883 tally yes
+
+compute         gncLmobileTemp  gncLmobile temp
+fix_modify      fxlangevinGncLmobile temp gncLmobileTemp
+
+compute         gncRmobileTemp  gncRmobile temp
+fix_modify      fxlangevinGncRmobile temp gncRmobileTemp
+
+compute         waterTemp       water temp
+fix_modify      fxlangevinWater temp waterTemp
+
+thermo_style    custom step temp c_gncLmobileTemp c_gncRmobileTemp c_waterTemp pe ke etotal
+thermo          1000
+
+run             ${eqrun1}
+
+# Turn off Langevin on water for stage 2 
+# Only graphene walls are thermostatted beyond this point
+unfix           fxlangevinWater
+
+reset_timestep  0
+
+###################################################
+#              EQUILIBRATION - STAGE 2            #
+###################################################
+
+run             ${eqrun2}
+
+reset_timestep  0
+
+###################################################
+#                   PRODUCTION STAGE              #
+###################################################
+# Frequency for updating dynamic groups
+variable        update equal 1
+
+# Define near-wall regions (bottom & top)
+region          botslab block INF INF INF INF  ${bs_min} ${bs_max} #0.00     5.00
+region          topslab block INF INF INF INF  ${ts_min} ${ts_max} #35.898  40.898
+
+# Water near the walls (dynamic groups)
+group           gbotslab dynamic water region botslab every ${update}
+group           gtopslab dynamic water region topslab every ${update}
+
+# Center-of-mass velocities of the slab water layers
+variable        vcmxbotslab  equal vcm(gbotslab,x)
+variable        vcmxtopslab  equal vcm(gtopslab,x)
+
+variable        vcmybotslab  equal vcm(gbotslab,y)
+variable        vcmytopslab  equal vcm(gtopslab,y)
+
+variable        vcmzbotslab  equal vcm(gbotslab,z)
+variable        vcmztopslab  equal vcm(gtopslab,z)
+
+# Force on wall water due to graphene in x,y,z
+compute         cfbotslab gbotslab group/group gncLmobile
+compute         cftopslab gtopslab group/group gncRmobile
+
+# Number of water molecules in each near-wall group
+variable        nbotslab equal count(gbotslab)
+variable        ntopslab equal count(gtopslab)
+
+###################################################
+#                OUTPUT              		  #
+###################################################
+
+# Bottom wall
+fix fxforcebot gbotslab ave/time 1 1 1 \
+    c_cfbotslab[*] v_nbotslab v_vcmxbotslab v_vcmybotslab v_vcmzbotslab \
+    file r${irun}_bot.dat mode scalar
+
+# Top wall
+fix fxforcetop gtopslab ave/time 1 1 1 \
+    c_cftopslab[*] v_ntopslab v_vcmxtopslab v_vcmytopslab v_vcmztopslab \
+    file r${irun}_top.dat mode scalar
+
+run             ${prorun}
