@@ -58,3 +58,7 @@ Once the correlation analysis is over enter this directory and run the python sc
   - « xi_M1.dat »: Value computed using Method-1
   - « xi_M2.dat »: Value computed using Method-2
   - « xi_M3.dat »: Value computed using Method-3
+
+# Some References
+1. PRE
+2. JCP
