@@ -164,8 +164,8 @@ reset_timestep  0
 variable        update equal 1
 
 # Define near-wall regions (bottom & top)
-region          botslab block INF INF INF INF  ${bs_min} ${bs_max} #0.00     5.00
-region          topslab block INF INF INF INF  ${ts_min} ${ts_max} #35.898  40.898
+region          botslab block INF INF INF INF  ${bs_min} ${bs_max} 
+region          topslab block INF INF INF INF  ${ts_min} ${ts_max} 
 
 # Water near the walls (dynamic groups)
 group           gbotslab dynamic water region botslab every ${update}
