@@ -23,6 +23,7 @@ nrun = int(sys.argv[1])     # No. of correlation windows;
 lagTime = int(sys.argv[2])  # Correlation interval time [in ps]
 skip = int(sys.argv[3])     # Frames to be skipped
 irun = int(sys.argv[4])     # Number of independent simulations
+nproc = int(sys.argv[5])     # Number of CPU processors
 
 s_end = 1.0     # End value for the Laplacian variable 's'
 s_num = 50002   # No. of datapoints for the Laplace transform
@@ -79,7 +80,7 @@ def main(k):
 	return k, xi_M1, xi_M2, xi_M3
 	
 # ########### Parallelizing ############# #
-with concurrent.futures.ProcessPoolExecutor() as executor:
+with concurrent.futures.ProcessPoolExecutor(max_workers=nproc) as executor:
 	run_ids = range(irun)
 	results = executor.map(main, run_ids)
 	for result in results:
