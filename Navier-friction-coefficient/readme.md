@@ -17,6 +17,8 @@ Run the LAMMPS script using the following command in the terminal:
    - KSPACE
    - MANYBODY
    - RIGID
+   - TALLY
+   - EXTRA-PAIR
   
    #### Output Information
    The data is outputted for bottom and top walls as « r`ID`_bot.dat » and « r`ID`_top.dat », respectively.
@@ -59,6 +61,16 @@ Once the correlation analysis is over enter this directory and run the python sc
   - « xi_M2.dat »: Value computed using Method-2
   - « xi_M3.dat »: Value computed using Method-3
 
-# Some References
-1. PRE
-2. JCP
+## Some References
+1. #### Prediction of fluid velocity slip at solid surfaces
+   Jesper Schmidt Hansen, Billy D. Todd and Peter J. Daivis
+   
+   Phys. Rev. E 84, 016313 (2011)
+
+   DOI: [https://doi.org/10.1103/PhysRevE.84.016313](https://doi.org/10.1103/PhysRevE.84.016313)
+2. #### Improved methodology to compute the intrinsic friction coefficient at solid–liquid interfaces
+   Sleeba Varghese, Jesper Schmidt Hansen and Billy D. Todd
+
+   J. Chem. Phys. 154, 184707 (2021)
+
+   DOI: [https://doi.org/10.1063/5.0040191](https://doi.org/10.1063/5.0040191)
