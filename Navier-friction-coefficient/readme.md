@@ -6,11 +6,20 @@ The methodology to extract the hydrodynamic friction coefficient is given in ste
 ### 1) LAMMPS
 Run the LAMMPS script using the following command in the terminal:
    
-   `mpirun -np N_PROC lmp_mpi -in inpt.lmp -var irun ID`
+   `mpirun -np N_PROC lmp_mpi -in inpt.lmp -var irun ID -var bs_min MIN_BOT -var bs_max MAX_BOT -var ts_min MIN_TOP -var ts_max MAX_TOP`
    #### LAMMPS Inputs
    - `N_PROC`: Number of CPU processors 
    - `ID`: Should be a whole number. Vary this value to obtain simulations starting from different initial conditions.
-   - All other input values inside the « inpt.lmp » and « SiC.tersoff_real_opt » are in LAMMPS real units.
+     
+      (The confinement is along the z-direction)
+     
+   - `MIN_BOT`: z_min for the bottom slab chosen.
+   - `MAX_BOT`: z_max for the bottom slab chosen.
+   - `MIN_TOP`: z_min for the top slab chosen.
+   - `MAX_TOP`: z_max for the top slab chosen.
+
+     (For the water–graphene system provided in `waterGnc.lmpsys`, the z-coordinate range (0.0, 5.0) encompasses the first water density peak near the bottom graphene wall, while the z-          coordinate range (35.898, 40.898) constitutes the first density peak near the top graphene wall.)
+   - All the input values inside the « inpt.lmp » and « SiC.tersoff_real_opt » are in LAMMPS real units.
   
    #### Required LAMMPS Packages
    - MOLECULE
