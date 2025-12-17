@@ -23,7 +23,7 @@ nrun = int(sys.argv[1])     # No. of correlation windows;
 lagTime = int(sys.argv[2])  # Correlation interval time [in ps]
 skip = int(sys.argv[3])     # Frames to be skipped
 irun = int(sys.argv[4])     # Number of independent simulations
-nproc = int(sys.argv[5])     # Number of CPU processors
+nproc = int(sys.argv[5])    # Number of CPU processors
 
 s_end = 1.0     # End value for the Laplacian variable 's'
 s_num = 50002   # No. of datapoints for the Laplace transform
