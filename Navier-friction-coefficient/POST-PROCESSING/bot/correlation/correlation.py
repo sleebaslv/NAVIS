@@ -21,8 +21,10 @@ startTime = int(sys.argv[2])    # Start frame of post-process stage
 endTime = int(sys.argv[3])      # End frame of post-process stage
 skip = int(sys.argv[4])         # Frames to be skipped
 irun = int(sys.argv[5])         # Number of independent simulations
+nproc = int(sys.argv[6])		# Number of CPU processors
 dt = 1.0*skip*0.001				# value of 1 time frame(in pico-second [ps]); 
                                 # Simulation dt = 1.0 femto-second
+
 start_time = time.time()
 
 def main(k):
@@ -43,7 +45,7 @@ def main(k):
 	return cuu, cuf
 
 # ########### Parallelizing ########## #
-with concurrent.futures.ProcessPoolExecutor() as executor:
+with concurrent.futures.ProcessPoolExecutor(max_workers=nproc) as executor:
 	run_ids = range(irun)
 	results = executor.map(main, run_ids)
 
