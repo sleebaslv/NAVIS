@@ -33,7 +33,7 @@ Run the LAMMPS script using the following command in the terminal:
    The data is outputted for bottom and top walls as « r`ID`_bot.dat » and « r`ID`_top.dat », respectively.
 
 ### 2) POST-PROCESSING 
-Once the LAMMPS simulations are over, enter the sub-directory « bot » (or « top ») to start analyzing the simulation data for the respective wall. Perform the same steps defined below for « top » (or « bot »). All scripts under this directory are written to make use of parallelization features available in Python. 
+Once the LAMMPS simulations are over, enter the sub-directory « bot » (or « top ») to start analyzing the simulation data for the respective wall. Perform the same steps defined below for « top » (or « bot »). All scripts under this directory are written to make use of parallelization features available in Python. The scripts are developed and tested using the Python version `3.10.12`.
 ### correlation
 Run the python script using the following command in the terminal:
 
