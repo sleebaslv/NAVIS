@@ -194,13 +194,9 @@ variable        ntopslab equal count(gtopslab)
 ###################################################
 
 # Bottom wall
-fix fxforcebot gbotslab ave/time 1 1 1 \
-    c_cfbotslab[*] v_nbotslab v_vcmxbotslab v_vcmybotslab v_vcmzbotslab \
-    file r${irun}_bot.dat mode scalar
+fix fxforcebot gbotslab ave/time 1 1 1 c_cfbotslab[*] v_nbotslab v_vcmxbotslab v_vcmybotslab v_vcmzbotslab file r${irun}_bot.dat mode scalar
 
 # Top wall
-fix fxforcetop gtopslab ave/time 1 1 1 \
-    c_cftopslab[*] v_ntopslab v_vcmxtopslab v_vcmytopslab v_vcmztopslab \
-    file r${irun}_top.dat mode scalar
+fix fxforcetop gtopslab ave/time 1 1 1 c_cftopslab[*] v_ntopslab v_vcmxtopslab v_vcmytopslab v_vcmztopslab file r${irun}_top.dat mode scalar
 
 run             ${prorun}
