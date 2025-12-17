@@ -20,6 +20,7 @@ Run the LAMMPS script using the following command in the terminal:
 
      (For the water–graphene system provided in `waterGnc.lmpsys`, the z-coordinate range (0.0, 5.0) encompasses the first water density peak near the bottom graphene wall, while the z-          coordinate range (35.898, 40.898) constitutes the first density peak near the top graphene wall.)
    - All the input values inside the « inpt.lmp » and « SiC.tersoff_real_opt » are in LAMMPS real units.
+   - It is also important to note that users should ensure the correct path to the LAMMPS binary is provided in place of `lmp_mpi`.
   
    #### Required LAMMPS Packages
    - MOLECULE
