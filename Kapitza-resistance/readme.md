@@ -37,7 +37,7 @@ The script is written in standard Python and tested using Python 3.10+.
 
 Run the Kapitza analysis script from the terminal using:
 
-python EMD_Kapitza.py IRUN DFREQ PRODRUN NRUN WINDOW DIA
+`python EMD_Kapitza.py IRUN DFREQ PRODRUN NRUN WINDOW DIA`
 
 #### Python Inputs
 
