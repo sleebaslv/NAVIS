@@ -37,7 +37,7 @@ The script is written in standard Python and tested using Python 3.10+.
 
 Run the Kapitza analysis script from the terminal using:
 
-python kapitza_analysis.py IRUN DFREQ PRODRUN NRUN WINDOW DIA
+python EMD_Kapitza.py IRUN DFREQ PRODRUN NRUN WINDOW DIA
 
 #### Python Inputs
 
@@ -70,10 +70,10 @@ python kapitza_analysis.py IRUN DFREQ PRODRUN NRUN WINDOW DIA
 
 The following files must be present in the analysis directory:
 
-- tempdropdelta.IRUN.dat  
+- tempdropdelta.ID.dat  
   Time series of the temperature difference across the interface
 
-- fluxcnt.IRUN.dat  
+- fluxcnt.ID.dat  
   Time series of the interfacial heat flux
 
 Both files are expected to be plain text files with two header rows, which are skipped automatically.
@@ -84,11 +84,11 @@ Both files are expected to be plain text files with two header rows, which are s
 
 The Kapitza conductance results are written to:
 
-- kapitzas.IRUN.dat
+- kapitzas.ID.dat
 
-## Some References
-1. #### Prediction of fluid Kapitza Resistance in CNT-Water system
+##  Reference
+ #### Prediction of fluid Kapitza Resistance in CNT-Water system
    
-  Sobin AlosiousSridhar Kumar KannamSarith P. SathianB. D. Todd
+  Sobin Alosious, Sridhar Kumar Kannam, Sarith P. Sathian, B. D. Todd
    
    DOI: [https://pubs.acs.org/doi/10.1021/acs.langmuir.0c03298](https://pubs.acs.org/doi/10.1021/acs.langmuir.0c03298)
