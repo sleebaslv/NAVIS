@@ -87,7 +87,7 @@ The Kapitza conductance results are written to:
 - kapitzas.ID.dat
 
 ##  Reference
- #### Prediction of fluid Kapitza Resistance in CNT-Water system
+ #### Nanoconfinement Effects on the Kapitza Resistance at Water–CNT Interfaces
    
   Sobin Alosious, Sridhar Kumar Kannam, Sarith P. Sathian, B. D. Todd
    
