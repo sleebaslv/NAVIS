@@ -2,7 +2,7 @@
 The codes in this directory are written by Sleeba Varghese as part of his PhD research under the supervision of Prof. Billy Dean Todd and Prof. Jesper Schmidt Hansen. 
 
 ## Usage
-The methodology to extract the hydrodynamic friction coefficient is given in step-by-step below
+The methodology for extracting the hydrodynamic friction coefficient is given in step-by-step format below
 ### 1) LAMMPS
 Run the LAMMPS script using the following command in the terminal:
    
