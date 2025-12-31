@@ -1,5 +1,5 @@
 # NAVIS 
-NAVIS (Nanochannel Velocity and Interfacial Slip) is a research toolkit developed to compute the hydrodynamic and thermal friction present at solid–liquid interfaces. The toolkit relies on data obtained from equilibrium molecular dynamics (EMD) simulations, which are subsequently post-processed to determine the corresponding friction coefficients. The EMD simulations are performed using the [LAMMPS](https://www.lammps.org/#gsc.tab=0) package, while post-processing is primarily carried out using [Python](https://www.python.org/).
+NAVIS (**NA**nochannel **V**elocity and thermal **I**nterfacial **S**lip) is a research toolkit developed to compute the hydrodynamic and thermal friction present at solid–liquid interfaces. The toolkit relies on data obtained from equilibrium molecular dynamics (EMD) simulations, which are subsequently post-processed to determine the corresponding friction coefficients. The EMD simulations are performed using the [LAMMPS](https://www.lammps.org/#gsc.tab=0) package, while post-processing is primarily carried out using [Python](https://www.python.org/).
 
 # Reference
 Bibtex details to be added after uploading the manuscript to arXiv.
